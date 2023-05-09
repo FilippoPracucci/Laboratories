@@ -93,7 +93,7 @@ public final class StudentsTable implements Table<Student, Integer> {
                  firstName = resultSet.getString("firstName");
                  lastName = resultSet.getString("lastName");
                  date = Utils.sqlDateToDate(resultSet.getDate("birthday"));
-                 birthday =  Utils.buildDate(date.getDay(), date.getMonth(), date.getYear());
+                 birthday =  Optional.ofNullable(date);
                  list.add(new Student(id, firstName, lastName, birthday));
              }
              return list;
