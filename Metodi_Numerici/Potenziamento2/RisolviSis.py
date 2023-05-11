@@ -1,5 +1,4 @@
 import numpy as np
-
 def Lsolve(L,b):
     """  
     Risoluzione con procedura forward di Lx=b con L triangolare inferiore  
@@ -19,11 +18,13 @@ def Lsolve(L,b):
         return x, flag
     
      # Test singolarita'
+    
     if np.all(np.diag(L)) != True:
          print('el. diag. nullo - matrice triangolare inferiore')
          x=[]
          flag=1
          return x, flag
+    
     # Preallocazione vettore soluzione
     x=np.zeros((n,1))
     
