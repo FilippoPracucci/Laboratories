@@ -110,36 +110,104 @@ from shippers s left join orders o on (s.ShipperID = o.ShipVia)
 group by ShipperID, CompanyName;
 
 /* 17.	Visualizzare i fornitori (SupplierID, CompanyName) che forniscono un solo prodotto */
-/*select s.SupplierID, s.CompanyName
-from suppliers s, orders, o
-where s.SupplierID = o.SupplierID
-group by s.SupplierID, s.CompanyName
-having count(o.productID) = 1;*/
+select s.SupplierID, s.CompanyName, count(*)
+from suppliers s, products p
+where s.SupplierID = p.SupplierID
+group by SupplierID, CompanyName
+having count(*) = 1;
 
 /* 18.	Visualizzare tutti gli impiegati che sono stati assunti dopo Margaret Peacock */
+select e.*
+from employees e
+where e.HireDate > (select e1.HireDate
+				    from employees e1	
+                    where e1.FirstName = 'Margaret' and e1.LastName = 'Peacock');
 
 /* 19.	Visualizzare gli ordini relativi al prodotto più costoso */
-                                       
+select o.*
+from orders o, `order details` od
+where o.OrderID = od.OrderID
+and od.ProductID in (select productID
+					 from products
+                     where UnitPrice = (select max(UnitPrice)
+									   from products p1));
+
 /* 20.	Visualizzare i nomi dei clienti per i quali l’ultimo ordine è relativo al 1998  */
+select c.CustomerID, CompanyName
+from customers c, orders o
+where c.customerID = o.customerID
+group by c.customerID, companyName
+having max(year(OrderDate)) = 1998;
 
 /* 21.	Contare il numero di clienti che non hanno effettuato ordini */
+select count(*)
+from customers c
+where c.customerID NOT IN (select o.customerID
+						   from orders o);
                          
 /* 22.	Visualizzare il prezzo minimo, massimo e medio dei prodotti per ciascuna categoria */
+select c.categoryID, c.categoryName, min(UnitPrice), avg(UnitPrice)
+from products p, categories c
+where p.categoryID = c.categoryID
+group by c.categoryID, c.categoryName;
 
 /* 23.	Selezionare i prodotti che hanno un prezzo superiore al prezzo medio dei prodotti forniti dallo stesso fornitore */
+select p.productID, p.productName, p.UnitPrice
+from products p
+where p.UnitPrice > (select avg(p1.UnitPrice)
+					 from products p1
+                     where p1.supplierID = p.supplierID);
                     
 /* 24.	Visualizzare, in ordine decrescente rispetto alla quantità totale venduta, i prodotti che hanno venduto una quantità 
 totale superiore al prodotto ‘Chai’ */
+select od.productID, sum(Quantity)
+from `order details` od
+group by od.productID
+having sum(Quantity) > (select sum(od1.Quantity)
+						from `order details` od1, products p
+                        where od1.productID = p.productID
+                        and p.productName = 'Chai')
+order by sum(Quantity) desc;
 
 /* 25.	Visualizzare il nome dei clienti che hanno fatto almeno due ordini di importo superiore a 15000 */
+select c.companyName
+from customers c, orders o
+where c.customerID = o.customerID
+and orderID IN (select od.orderID
+			    from `order details` od
+                group by od.orderID
+                having sum(od.UnitPrice * od.Quantity) > 15000);
 
 /* 26.	Individuare i codici dei clienti che hanno fatto un numero di ordini pari a quello del cliente 'Eastern Connection' */
+select o.customerID
+from orders o
+group by o.customerID
+having count(*) = (select count(*)
+				   from orders o1, customers c
+                   where o1.customerID = c.customerID
+                   and c.companyName = 'Eastern Connection');
 
 /* 27. Visualizzare il numero di ordini ricevuti nel 1997 e di importo superiore a 10000*/
+select count(*)
+from orders
+where orderID in (select od.orderID
+				  from orders o1, `order details` od
+                  where o1.orderID = od.orderID
+                  and year(o1.orderDate) = 1997
+                  group by od.orderID
+                  having sum(od.Quantity * od.UnitPrice) > 10000);
 
 /* 28. Visualizzare i corrieri che hanno consegnato un numero di ordini superiore al numero di ordini consegnati da Speedy Express. */
 
-/* 29. Visualizzare i clienti che hanno ordinato prodotti di tutte le categorie */
 
+/* 29. Visualizzare i clienti che hanno ordinato prodotti di tutte le categorie */
+select c.*
+from customers c, orders o, `order details` od, products p
+where c.customerID = o.customerID
+and o.orderID = od.orderID
+and od.productID = p.productID
+group by c.customerID
+having count(distinct p.categoryID) = (select count(*)
+									   from categories c1);	
                      
 
