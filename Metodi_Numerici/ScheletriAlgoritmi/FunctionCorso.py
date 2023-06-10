@@ -121,8 +121,8 @@ def steepestdescent(A,b,x0,itmax,tol):
     errore=np.linalg.norm(r)/nb
     vec_sol=[]
     vec_sol.append(x)
-    vet_r=[]
-    vet_r.append(errore)
+    vet_err=[]
+    vet_err.append(errore)
      
 # utilizzare il metodo del gradiente per trovare la soluzione
     while errore>= tol and it< itmax:
@@ -135,11 +135,11 @@ def steepestdescent(A,b,x0,itmax,tol):
         vec_sol.append(x)
         r=r+alpha*Ap
         errore=np.linalg.norm(r)/nb
-        vet_r.append(errore)
+        vet_err.append(errore)
         p = -r 
         
     
-    return x,vet_r,vec_sol,it
+    return x,vet_err,vec_sol,it
 
 
 def conjugate_gradient(A,b,x0,itmax,tol):
@@ -160,8 +160,8 @@ def conjugate_gradient(A,b,x0,itmax,tol):
     errore=np.linalg.norm(r)/nb
     vec_sol=[]
     vec_sol.append(x0)
-    vet_r=[]
-    vet_r.append(errore)
+    vet_err=[]
+    vet_err.append(errore)
 # utilizzare il metodo del gradiente coniugato per trovare la soluzione
     while errore >= tol and it< itmax:
         it=it+1
@@ -173,11 +173,11 @@ def conjugate_gradient(A,b,x0,itmax,tol):
         r=r+alpha*Ap
         gamma=np.dot(r.T,r)/rtr
         errore=np.linalg.norm(r)/nb
-        vet_r.append(errore)
+        vet_err.append(errore)
         p = -r+gamma*p
    
     
-    return x,vet_r,vec_sol,it
+    return x,vet_err,vec_sol,it
 
 def eqnorm(A,b):
 #Soluzione di un sistema sovradeterminato facendo uso delle equazioni normali

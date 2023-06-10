@@ -170,8 +170,8 @@ def steepestdescent(A,b,x0,itmax,tol):
     errore = np.linalg.norm(r) / nb 
     vec_sol=[]
     vec_sol.append(x)
-    vet_r=[]
-    vet_r.append(errore)
+    vet_err=[]
+    vet_err.append(errore)
      
 # utilizzare il metodo del gradiente per trovare la soluzione
     while it < itmax and errore >= tol: 
@@ -184,11 +184,11 @@ def steepestdescent(A,b,x0,itmax,tol):
         vec_sol.append(x)
         r = r + alpha*Ap
         errore = np.linalg.norm(r) / nb
-        vet_r.append(errore)
+        vet_err.append(errore)
         p = -r  
         
     
-    return x,vet_r,vec_sol,it
+    return x,vet_err,vec_sol,it
 
 """A = np.array([[8,3], [3,14]])
 n = A.shape[0]
@@ -221,8 +221,8 @@ def conjugate_gradient(A,b,x0,itmax,tol):
     errore = np.linalg.norm(r) / nb
     vec_sol=[]
     vec_sol.append(x)
-    vet_r=[]
-    vet_r.append(r)
+    vet_err=[]
+    vet_err.append(errore)
 # utilizzare il metodo del gradiente coniugato per trovare la soluzione
     while errore >= tol and it < itmax: 
         it = it + 1
@@ -234,11 +234,11 @@ def conjugate_gradient(A,b,x0,itmax,tol):
         r = r + alpha*Ap 
         gamma = np.dot(r.T, r) / rTr
         errore = np.linalg.norm(r) / nb
-        vet_r.append(r)
+        vet_err.append(errore)
         p = -r 
    
     
-    return x,vet_r,vec_sol,it
+    return x,vet_err,vec_sol,it
 
 """A = np.array([[8,3], [3,14]])
 n = A.shape[0]
@@ -349,3 +349,71 @@ plt.plot(xv,pol1,x,y,'ro')
 plt.show()
 errore=np.linalg.norm(y-np.polyval(np.flip(alpha),x))**2
 print("errore ",errore)"""
+
+
+
+
+#Funzioni per la costruzione del polinomio interpolatore nella base di
+#Lagrange
+def plagr(xnodi,k):
+    """
+    Restituisce i coefficienti del k-esimo pol di
+    Lagrange associato ai punti del vettore xnodi
+    """
+    xzeri = np.zeros_like(xnodi)
+    n = xnodi.size
+    if k == 0:
+        xzeri = xnodi[1:n]
+    else:
+        xzeri = np.append(xnodi[0:k],xnodi[k+1:n])
+
+    num = np.poly(xzeri)
+    den = np.polyval(num, x[k])
+    
+    p = num / den
+    
+    return p
+
+"""x = np.array([0.0, 1/4, 1/2, 3/4, 1])
+n = x.shape[0]
+xx = np.linspace(x[0], x[n-1], 200)
+M = xx.shape[0]
+matL = np.zeros((M, n))
+
+for j in range(n):
+    p = plagr(x, j)
+    L = np.polyval(p, xx)
+    matL[:, j] = L
+    #plt.plot(xx, L)
+    #plt.plot(x, np.zeros((n,)), 'ro')
+    #plt.plot(x[j], 1, 'g*')
+    #plt.title("L" + str(j))
+    #plt.show()
+    #si osserva la proprietà partizione dell'unità, cioè solo una funzione è diversa da 0 (uguale a 1) in ogni punto ed è quella di indice del punto
+y = np.random.rand(5)
+print(y)
+pol = matL@y
+plt.plot(xx, pol, x, y, "ro")"""
+
+
+
+def InterpL(x, f, xx):
+    """"
+    %funzione che determina in un insieme di punti il valore del polinomio
+    %interpolante ottenuto dalla formula di Lagrange.
+    % DATI INPUT
+    %  x  vettore con i nodi dell'interpolazione
+    %  f  vettore con i valori dei nodi 
+    %  xx vettore con i punti in cui si vuole calcolare il polinomio
+    % DATI OUTPUT
+    %  y vettore contenente i valori assunti dal polinomio interpolante
+    %
+    """
+    n = x.size
+    m = xx.size
+    L = np.zeros((m,n))
+    for k in range(n):
+        p = plagr(x, k)
+        L[:,k] = np.polyval(p, xx)
+    
+    return np.dot(L,f)
