@@ -3,7 +3,7 @@
     <head>
         <title><?php echo $templateParams["titolo"] ?></title>
         <meta charset="UTF-8"/>
-        <link rel="stylesheet" href="style.css" type="text/css"/>
+        <link rel="stylesheet" href="css/style.css" type="text/css"/>
     </head>
     <body>
         <header>
@@ -11,7 +11,7 @@
         </header>
         <nav>
             <ul>
-                <li><a href="index.php">Home</a></li><li><a href="archivio.html">Archivio</a></li><li><a href="contatti.php">Contatti</a></li><li><a href="login.html">Login</a></li>
+                <li><a href="index.php">Home</a></li><li><a href="archivio.php">Archivio</a></li><li><a href="contatti.php">Contatti</a></li><li><a href="login.php">Login</a></li>
             </ul>
         </nav>
         <main>
