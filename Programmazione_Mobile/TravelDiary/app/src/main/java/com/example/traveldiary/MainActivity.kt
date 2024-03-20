@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.traveldiary.ui.screens.AddTravelScreen
 import com.example.traveldiary.ui.screens.HomeScreen
+import com.example.traveldiary.ui.screens.SettingsScreen
 import com.example.traveldiary.ui.screens.TravelDetailsScreen
 import com.example.traveldiary.ui.theme.TravelDiaryTheme
 
@@ -25,7 +27,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     // HomeScreen()
-                    TravelDetailsScreen()
+                    // TravelDetailsScreen()
+                    // SettingsScreen()
+                    AddTravelScreen()
                 }
             }
         }
