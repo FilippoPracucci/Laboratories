@@ -1,5 +1,6 @@
 package com.example.traveldiary.ui.screens
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,21 +24,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.traveldiary.ui.composables.AppBar
 
 @Composable
-fun TravelDetailsScreen() {
+fun TravelDetailsScreen(travelId: String) {
+    val ctx = LocalContext.current
+
+    fun shareDetails() {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, travelId)
+        }
+        val shareIntent = Intent.createChooser(sendIntent, "Share travel")
+        if (shareIntent.resolveActivity(ctx.packageManager) != null) {
+            ctx.startActivity(shareIntent)
+        }
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.primary,
-                onClick = { /*TODO*/ }
+                onClick = ::shareDetails
             ) {
                 Icon(Icons.Outlined.Share, "Share the travel")
             }
-        },
-        topBar = { AppBar(title = "Travel Details") }
+        }
     ) { contentPadding ->
         Column(
             modifier = Modifier

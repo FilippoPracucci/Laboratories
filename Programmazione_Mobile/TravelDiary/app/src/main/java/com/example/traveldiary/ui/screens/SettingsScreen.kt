@@ -22,9 +22,7 @@ import com.example.traveldiary.ui.composables.AppBar
 
 @Composable
 fun SettingsScreen() {
-    Scaffold(
-        topBar = { AppBar(title = "Settings") }
-    ) {contentPadding ->
+    Scaffold() { contentPadding ->
         Column(
             modifier = Modifier
                 .padding(contentPadding)

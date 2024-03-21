@@ -32,22 +32,22 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.traveldiary.ui.composables.AppBar
+import androidx.navigation.NavHostController
+import com.example.traveldiary.ui.TravelDiaryRoute
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     val items = (1..20).map { "Item n°$it" }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.primary,
-                onClick = { /*TODO*/ }
+                onClick = { navController.navigate(TravelDiaryRoute.AddTravel.route) }
             ) {
                 Icon(Icons.Outlined.Add, "Add a travel")
             }
-        },
-        topBar = { AppBar(title = "TravelDiary") }
+        }
     ) { contentPadding ->
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -56,16 +56,23 @@ fun HomeScreen() {
             contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 80.dp),
             modifier = Modifier.padding(contentPadding)
         ) {
-            items(items) { item -> TravelItem(item) }
+            items(items) { item ->
+                TravelItem(
+                    item,
+                    onClick = {
+                        navController.navigate(TravelDiaryRoute.TravelDetails.buildRoute(item))
+                    }
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TravelItem(item: String) {
+fun TravelItem(item: String, onClick: () -> Unit) {
     Card(
-        onClick = { /*TODO*/ },
+        onClick = onClick,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
