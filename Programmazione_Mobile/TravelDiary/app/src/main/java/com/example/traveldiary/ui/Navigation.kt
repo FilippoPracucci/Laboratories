@@ -12,7 +12,9 @@ import androidx.navigation.navArgument
 import com.example.traveldiary.ui.screens.AddTravelScreen
 import com.example.traveldiary.ui.screens.HomeScreen
 import com.example.traveldiary.ui.screens.SettingsScreen
+import com.example.traveldiary.ui.screens.SettingsViewModel
 import com.example.traveldiary.ui.screens.TravelDetailsScreen
+import org.koin.androidx.compose.koinViewModel
 
 sealed class TravelDiaryRoute (
     val route: String,
@@ -62,7 +64,8 @@ fun TravelDiaryNavGraph(
         }
         with(TravelDiaryRoute.Settings) {
             composable(route) {
-                SettingsScreen()
+                val settingsVm = koinViewModel<SettingsViewModel>()
+                SettingsScreen(settingsVm.state, settingsVm::setUsername)
             }
         }
     }
