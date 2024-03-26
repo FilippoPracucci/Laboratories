@@ -1,4 +1,4 @@
-package com.example.traveldiary.ui.screens
+package com.example.traveldiary.ui.screens.addtravel
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,7 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
 @Composable
-fun AddTravelScreen(navController: NavHostController) {
+fun AddTravelScreen(
+    navController: NavHostController,
+    state: AddTravelState,
+    actions: AddTravelActions
+) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -56,8 +60,8 @@ fun AddTravelScreen(navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             OutlinedTextField(
-                value = "",
-                onValueChange = { /*TODO*/ },
+                value = state.destination,
+                onValueChange = actions::setDestination,
                 label = { Text("Destination") },
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
@@ -67,14 +71,14 @@ fun AddTravelScreen(navController: NavHostController) {
                 }
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = { /*TODO*/ },
+                value = state.date,
+                onValueChange = actions::setDate,
                 label = { Text("Date") },
                 modifier = Modifier.fillMaxWidth()
             )
             OutlinedTextField(
-                value = "",
-                onValueChange = { /*TODO*/ },
+                value = state.description,
+                onValueChange = actions::setDescription,
                 label = { Text("Description")},
                 modifier = Modifier.fillMaxWidth()
             )

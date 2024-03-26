@@ -1,19 +1,21 @@
 package com.example.traveldiary.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.traveldiary.ui.screens.AddTravelScreen
-import com.example.traveldiary.ui.screens.HomeScreen
-import com.example.traveldiary.ui.screens.SettingsScreen
-import com.example.traveldiary.ui.screens.SettingsViewModel
-import com.example.traveldiary.ui.screens.TravelDetailsScreen
+import com.example.traveldiary.ui.screens.addtravel.AddTravelScreen
+import com.example.traveldiary.ui.screens.addtravel.AddTravelViewModel
+import com.example.traveldiary.ui.screens.home.HomeScreen
+import com.example.traveldiary.ui.screens.settings.SettingsScreen
+import com.example.traveldiary.ui.screens.settings.SettingsViewModel
+import com.example.traveldiary.ui.screens.traveldetails.TravelDetailsScreen
 import org.koin.androidx.compose.koinViewModel
 
 sealed class TravelDiaryRoute (
@@ -58,8 +60,10 @@ fun TravelDiaryNavGraph(
             }
         }
         with(TravelDiaryRoute.AddTravel) {
-            composable(route, arguments) {
-                AddTravelScreen(navController)
+            composable(route) {
+                val addTravelVm = koinViewModel<AddTravelViewModel>()
+                val state by addTravelVm.state.collectAsStateWithLifecycle()
+                AddTravelScreen(navController, state, addTravelVm.actions)
             }
         }
         with(TravelDiaryRoute.Settings) {

@@ -1,4 +1,4 @@
-package com.example.traveldiary.ui.screens
+package com.example.traveldiary.ui.screens.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +21,10 @@ import androidx.compose.ui.unit.dp
 import com.example.traveldiary.ui.composables.AppBar
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    state: SettingsState,
+    onUsernameChanged: (String) -> Unit
+) {
     Scaffold() { contentPadding ->
         Column(
             modifier = Modifier
@@ -30,17 +33,15 @@ fun SettingsScreen() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var username by rememberSaveable { mutableStateOf("username") }
-
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
+                value = state.username,
+                onValueChange = onUsernameChanged,
                 label = { Text("Username") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.size(36.dp))
             Text(
-                text = username,
+                text = state.username,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.bodyLarge
             )
