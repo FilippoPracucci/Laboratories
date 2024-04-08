@@ -26,16 +26,17 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.traveldiary.data.database.Place
 
 @Composable
-fun TravelDetailsScreen(travelId: String) {
+fun TravelDetailsScreen(place: Place) {
     val ctx = LocalContext.current
 
     fun shareDetails() {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, travelId)
+            putExtra(Intent.EXTRA_TEXT, place.name)
         }
         val shareIntent = Intent.createChooser(sendIntent, "Share travel")
         if (shareIntent.resolveActivity(ctx.packageManager) != null) {
@@ -74,18 +75,18 @@ fun TravelDetailsScreen(travelId: String) {
                     .padding(vertical = 16.dp),
             )
             Text(
-                "Destination",
+                place.name,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.titleLarge
             )
             Text(
-                "01/01/2024",
+                place.date,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.bodySmall
             )
             Spacer(Modifier.size(8.dp))
             Text(
-                "Description",
+                place.description,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 style = MaterialTheme.typography.bodyMedium
             )

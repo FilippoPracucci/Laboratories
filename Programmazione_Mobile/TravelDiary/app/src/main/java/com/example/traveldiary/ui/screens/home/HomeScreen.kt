@@ -33,12 +33,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.traveldiary.data.database.Place
+import com.example.traveldiary.ui.PlacesState
 import com.example.traveldiary.ui.TravelDiaryRoute
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
-    val items = (1..20).map { "Item n°$it" }
-
+fun HomeScreen(state: PlacesState, navController: NavHostController) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -56,11 +56,11 @@ fun HomeScreen(navController: NavHostController) {
             contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 80.dp),
             modifier = Modifier.padding(contentPadding)
         ) {
-            items(items) { item ->
+            items(state.places) { item ->
                 TravelItem(
                     item,
                     onClick = {
-                        navController.navigate(TravelDiaryRoute.TravelDetails.buildRoute(item))
+                        navController.navigate(TravelDiaryRoute.TravelDetails.buildRoute(item.id.toString()))
                     }
                 )
             }
@@ -70,7 +70,7 @@ fun HomeScreen(navController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TravelItem(item: String, onClick: () -> Unit) {
+fun TravelItem(item: Place, onClick: () -> Unit) {
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(
@@ -100,7 +100,7 @@ fun TravelItem(item: String, onClick: () -> Unit) {
             )
             Spacer(Modifier.size(8.dp))
             Text(
-                text = item,
+                text = item.name,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center

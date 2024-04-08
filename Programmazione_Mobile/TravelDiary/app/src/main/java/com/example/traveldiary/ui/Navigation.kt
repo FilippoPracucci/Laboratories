@@ -10,6 +10,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.traveldiary.data.database.Place
 import com.example.traveldiary.ui.screens.addtravel.AddTravelScreen
 import com.example.traveldiary.ui.screens.addtravel.AddTravelViewModel
 import com.example.traveldiary.ui.screens.home.HomeScreen
@@ -44,6 +45,9 @@ fun TravelDiaryNavGraph(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val placesVm = koinViewModel<PlacesViewModel>()
+    val placesState by placesVm.state.collectAsStateWithLifecycle()
+
     NavHost(
         navController = navController,
         startDestination = TravelDiaryRoute.Home.route,
@@ -51,19 +55,33 @@ fun TravelDiaryNavGraph(
     ) {
         with(TravelDiaryRoute.Home) {
             composable(route) {
-                HomeScreen(navController)
+                HomeScreen(placesState, navController)
             }
         }
         with(TravelDiaryRoute.TravelDetails) {
             composable(route) { backStackEntry ->
-                TravelDetailsScreen(backStackEntry.arguments?.getString("travelId") ?: "")
+                val place = requireNotNull(placesState.places.find { place ->
+                    place.id == backStackEntry.arguments?.getString("travelId")?.toInt()
+                })
+                TravelDetailsScreen(place)
             }
         }
         with(TravelDiaryRoute.AddTravel) {
             composable(route) {
                 val addTravelVm = koinViewModel<AddTravelViewModel>()
                 val state by addTravelVm.state.collectAsStateWithLifecycle()
-                AddTravelScreen(navController, state, addTravelVm.actions)
+                AddTravelScreen(
+                    navController,
+                    state,
+                    onCreate = {
+                        placesVm.addPlace(Place(
+                            name = state.destination,
+                            date = state.date,
+                            description = state.description
+                        )
+                        )
+                    },
+                    addTravelVm.actions)
             }
         }
         with(TravelDiaryRoute.Settings) {

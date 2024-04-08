@@ -39,13 +39,17 @@ import androidx.navigation.NavHostController
 fun AddTravelScreen(
     navController: NavHostController,
     state: AddTravelState,
+    onCreate: () -> Unit,
     actions: AddTravelActions
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.primary,
-                onClick = { navController.navigateUp() }
+                onClick = {
+                    onCreate()
+                    navController.navigateUp()
+                }
             ) {
                 Icon(Icons.Outlined.Check, "Add the travel")
             }
