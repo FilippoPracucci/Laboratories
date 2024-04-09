@@ -55,12 +55,9 @@ fun TravelDetailsScreen(place: Place) {
         }
     ) { contentPadding ->
         Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .padding(12.dp)
-                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(contentPadding).padding(12.dp).fillMaxSize()
         ) {
             Image(
                 Icons.Outlined.Image,

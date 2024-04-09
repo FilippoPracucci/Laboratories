@@ -24,4 +24,8 @@ class PlacesViewModel(
     fun addPlace(place: Place) = viewModelScope.launch {
         repository.upsert(place)
     }
+
+    fun deletePlace(place: Place) = viewModelScope.launch {
+        repository.delete(place)
+    }
 }

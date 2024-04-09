@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,21 +50,25 @@ fun HomeScreen(state: PlacesState, navController: NavHostController) {
             }
         }
     ) { contentPadding ->
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 80.dp),
-            modifier = Modifier.padding(contentPadding)
-        ) {
-            items(state.places) { item ->
-                TravelItem(
-                    item,
-                    onClick = {
-                        navController.navigate(TravelDiaryRoute.TravelDetails.buildRoute(item.id.toString()))
-                    }
-                )
+        if (state.places.isNotEmpty()) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 80.dp),
+                modifier = Modifier.padding(contentPadding)
+            ) {
+                items(state.places) { item ->
+                    TravelItem(
+                        item,
+                        onClick = {
+                            navController.navigate(TravelDiaryRoute.TravelDetails.buildRoute(item.id.toString()))
+                        }
+                    )
+                }
             }
+        } else {
+            NoItemsPlaceHolder(Modifier.padding(contentPadding))
         }
     }
 }
@@ -106,5 +111,32 @@ fun TravelItem(item: Place, onClick: () -> Unit) {
                 textAlign = TextAlign.Center
             )
         }
+    }
+}
+
+@Composable
+fun NoItemsPlaceHolder(modifier: Modifier = Modifier) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Icon(
+            Icons.Outlined.LocationOn, "Location icon",
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .size(48.dp),
+            tint = MaterialTheme.colorScheme.secondary
+        )
+        Text(
+            "No items",
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            "Tap the + button to add a new place.",
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }

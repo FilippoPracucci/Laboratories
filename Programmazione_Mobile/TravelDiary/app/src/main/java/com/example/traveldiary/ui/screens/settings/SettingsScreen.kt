@@ -25,26 +25,21 @@ fun SettingsScreen(
     state: SettingsState,
     onUsernameChanged: (String) -> Unit
 ) {
-    Scaffold() { contentPadding ->
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .padding(12.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            OutlinedTextField(
-                value = state.username,
-                onValueChange = onUsernameChanged,
-                label = { Text("Username") },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(Modifier.size(36.dp))
-            Text(
-                text = state.username,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(12.dp).fillMaxSize()
+    ) {
+        OutlinedTextField(
+            value = state.username,
+            onValueChange = onUsernameChanged,
+            label = { Text("Username") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.size(36.dp))
+        Text(
+            text = state.username,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }

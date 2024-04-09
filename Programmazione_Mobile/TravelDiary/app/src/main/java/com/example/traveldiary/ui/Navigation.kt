@@ -30,7 +30,7 @@ sealed class TravelDiaryRoute (
         "Travel Details",
         listOf(navArgument("travelId") { type = NavType.StringType})
     ) {
-        fun buildRoute(travelId: String) = "travels/{$travelId}"
+        fun buildRoute(travelId: String) = "travels/$travelId"
     }
     data object AddTravel : TravelDiaryRoute("travels/add", "Add Travel")
     data object Settings : TravelDiaryRoute("settings", "Settings")
@@ -60,8 +60,8 @@ fun TravelDiaryNavGraph(
         }
         with(TravelDiaryRoute.TravelDetails) {
             composable(route) { backStackEntry ->
-                val place = requireNotNull(placesState.places.find { place ->
-                    place.id == backStackEntry.arguments?.getString("travelId")?.toInt()
+                val place = requireNotNull(placesState.places.find {
+                    it.id == backStackEntry.arguments?.getString("travelId")?.toInt()
                 })
                 TravelDetailsScreen(place)
             }
@@ -71,17 +71,11 @@ fun TravelDiaryNavGraph(
                 val addTravelVm = koinViewModel<AddTravelViewModel>()
                 val state by addTravelVm.state.collectAsStateWithLifecycle()
                 AddTravelScreen(
-                    navController,
-                    state,
-                    onCreate = {
-                        placesVm.addPlace(Place(
-                            name = state.destination,
-                            date = state.date,
-                            description = state.description
-                        )
-                        )
-                    },
-                    addTravelVm.actions)
+                    navController = navController,
+                    state = state,
+                    actions = addTravelVm.actions,
+                    onSubmit = { placesVm.addPlace(state.toPlace()) }
+                    )
             }
         }
         with(TravelDiaryRoute.Settings) {

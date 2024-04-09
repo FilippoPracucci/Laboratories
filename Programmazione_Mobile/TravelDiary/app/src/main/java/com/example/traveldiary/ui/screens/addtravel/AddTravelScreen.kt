@@ -39,7 +39,7 @@ import androidx.navigation.NavHostController
 fun AddTravelScreen(
     navController: NavHostController,
     state: AddTravelState,
-    onCreate: () -> Unit,
+    onSubmit: () -> Unit,
     actions: AddTravelActions
 ) {
     Scaffold(
@@ -47,14 +47,15 @@ fun AddTravelScreen(
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.primary,
                 onClick = {
-                    onCreate()
+                    if (!state.canSubmit) return@FloatingActionButton
+                    onSubmit()
                     navController.navigateUp()
                 }
             ) {
                 Icon(Icons.Outlined.Check, "Add the travel")
             }
         }
-    ) {contentPadding ->
+    ) { contentPadding ->
         Column(
             modifier = Modifier
                 .padding(contentPadding)

@@ -5,5 +5,5 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Place::class], version = 1)
 abstract class TravelDiaryDatabase : RoomDatabase() {
-    abstract fun placesDAO():PlacesDao
+    abstract fun placesDAO(): PlacesDao
 }
