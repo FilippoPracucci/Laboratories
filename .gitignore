@@ -4,3 +4,5 @@
 
 Programmazione_Mobile/**/*.xml
 Programmazione_Mobile/**/local.properties
+
+!Programmazione_Mobile/**/AndroidManifest.xml
