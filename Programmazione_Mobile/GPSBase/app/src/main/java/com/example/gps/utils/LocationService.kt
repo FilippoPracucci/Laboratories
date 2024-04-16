@@ -24,6 +24,12 @@ enum class MonitoringStatus {
     NotMonitoring
 }
 
+enum class StartMonitoringResult {
+    Started,
+    GPSDisabled,
+    PermissionDenied
+}
+
 data class Coordinates(val latitude: Double, val longitude: Double)
 
 class LocationService(private val ctx: Context) {
@@ -32,21 +38,20 @@ class LocationService(private val ctx: Context) {
         private set
     var monitoringStatus by mutableStateOf(MonitoringStatus.NotMonitoring)
         private set
-    var isLocationEnabled: Boolean? by mutableStateOf(null)
-        private set
 
-    val locationProviderClient = LocationServices.getFusedLocationProviderClient(ctx)
+    private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ctx)
 
-    val locationRequest =
+    private val locationRequest =
         LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).apply {
             setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
         }.build()
 
-    val locationCallback = object : LocationCallback() {
+    private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
             super.onLocationResult(p0)
-            coordinates = Coordinates(p0.locations.last().latitude, p0.locations.last().longitude)
-            p0.locations.last()
+            with (p0.locations.last()) {
+                coordinates = Coordinates(latitude, longitude)
+            }
             endLocationRequest()
         }
     }
@@ -60,30 +65,31 @@ class LocationService(private val ctx: Context) {
         }
     }
 
-    fun requestCurrentLocation() {
+    fun requestCurrentLocation(): StartMonitoringResult {
         // Check if location is enabled
         val locationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if (isLocationEnabled != true) return
+        val isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if (!isLocationEnabled) return StartMonitoringResult.GPSDisabled
 
         // Check if permission is granted
         val permissionGranted = ContextCompat.checkSelfPermission(
             ctx,
             Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-        if (!permissionGranted) return
+        if (!permissionGranted) return StartMonitoringResult.PermissionDenied
 
-        locationProviderClient.requestLocationUpdates(
+        fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
             Looper.getMainLooper()
         )
         monitoringStatus = MonitoringStatus.Monitoring
+        return StartMonitoringResult.Started
     }
 
     fun pauseLocationRequest() {
         if (monitoringStatus != MonitoringStatus.Monitoring) return
-        locationProviderClient.removeLocationUpdates(locationCallback)
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         monitoringStatus = MonitoringStatus.Paused
     }
 
@@ -94,7 +100,7 @@ class LocationService(private val ctx: Context) {
 
     fun endLocationRequest() {
         if (monitoringStatus == MonitoringStatus.NotMonitoring) return
-        locationProviderClient.removeLocationUpdates(locationCallback)
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         monitoringStatus = MonitoringStatus.NotMonitoring
     }
 }

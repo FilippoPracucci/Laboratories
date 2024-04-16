@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.example.gps.ui.theme.GPSTheme
 import com.example.gps.utils.LocationService
 import com.example.gps.utils.PermissionStatus
+import com.example.gps.utils.StartMonitoringResult
 import com.example.gps.utils.rememberPermission
 
 class MainActivity : ComponentActivity() {
@@ -67,14 +68,16 @@ class MainActivity : ComponentActivity() {
                     ) { status ->
                         when (status) {
                             PermissionStatus.Unknown -> {}
-                            PermissionStatus.Granted -> locationService.requestCurrentLocation()
+                            PermissionStatus.Granted -> {
+                                val res = locationService.requestCurrentLocation()
+                                showLocationDisabledAlert = res == StartMonitoringResult.GPSDisabled
+                            }
                             PermissionStatus.Denied ->
                                 // Explain why the permission is required
                                 showPermissionDeniedAlert = true
                             PermissionStatus.PermanentlyDenied ->
                                 // Go to settings manually
                                 showPermissionPermanentlyDeniedSnackbar = true
-
                         }
                     }
 
@@ -82,13 +85,8 @@ class MainActivity : ComponentActivity() {
                         if (locationPermission.status.isGranted) {
                             locationService.requestCurrentLocation()
                         } else {
-                            locationPermission.launchPermissionRequest()
-                        }
-                    }
-
-                    if (locationService.isLocationEnabled == false) {
-                        LaunchedEffect(locationService.isLocationEnabled) {
-                            showLocationDisabledAlert = locationService.isLocationEnabled == false
+                            val res = locationService.requestCurrentLocation()
+                            showLocationDisabledAlert = res == StartMonitoringResult.GPSDisabled
                         }
                     }
 
@@ -128,9 +126,7 @@ class MainActivity : ComponentActivity() {
                                     Text("Dismiss")
                                 }
                             },
-                            onDismissRequest = {
-                                showLocationDisabledAlert = false
-                            }
+                            onDismissRequest = { showLocationDisabledAlert = false }
                         )
                     }
 
@@ -151,9 +147,7 @@ class MainActivity : ComponentActivity() {
                                     Text("Dismiss")
                                 }
                             },
-                            onDismissRequest = {
-                                showPermissionDeniedAlert = false
-                            }
+                            onDismissRequest = { showPermissionDeniedAlert = false }
                         )
                     }
 
