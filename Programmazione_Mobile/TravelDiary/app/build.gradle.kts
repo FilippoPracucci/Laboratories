@@ -67,6 +67,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation("io.coil-kt:coil-compose:2.3.0")
     implementation("com.google.android.gms:play-services-location:21.2.0")
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
