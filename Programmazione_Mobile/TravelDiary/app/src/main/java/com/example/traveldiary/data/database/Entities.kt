@@ -16,5 +16,8 @@ data class Place(
     val date: String,
 
     @ColumnInfo
-    val description: String
+    val description: String,
+
+    @ColumnInfo
+    val imageUri: String?
 )

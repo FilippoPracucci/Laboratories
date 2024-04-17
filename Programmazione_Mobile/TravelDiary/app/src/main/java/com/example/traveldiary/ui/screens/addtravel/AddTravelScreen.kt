@@ -1,5 +1,6 @@
 package com.example.traveldiary.ui.screens.addtravel
 
+import android.Manifest
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +36,10 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.traveldiary.utils.LocationService
+import com.example.traveldiary.utils.PermissionStatus
+import com.example.traveldiary.utils.rememberPermission
+import org.koin.compose.koinInject
 
 @Composable
 fun AddTravelScreen(
@@ -42,6 +48,30 @@ fun AddTravelScreen(
     onSubmit: () -> Unit,
     actions: AddTravelActions
 ) {
+    val locationService = koinInject<LocationService>()
+    val locationPermission = rememberPermission(
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) { status ->  
+        when (status) {
+            PermissionStatus.Unknown -> {}
+            PermissionStatus.Granted -> locationService.requestCurrentLocation()
+            PermissionStatus.Denied -> actions.setShowLocationPermissionDeniedAlert(true)
+            PermissionStatus.PermanentlyDenied -> actions.setShowLocationPermissionPermanentlyDeniedSnackbar(true)
+        }
+    }
+
+    fun requestLocation() {
+        if (locationPermission.status.isGranted) {
+            locationService.requestCurrentLocation()
+        } else {
+            locationPermission.launchPermissionRequest()
+        }
+    }
+    
+    LaunchedEffect(locationService.isLocationEnabled) {
+        actions.setShowLocationDisabledAlert(locationService.isLocationEnabled == false)
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -70,7 +100,7 @@ fun AddTravelScreen(
                 label = { Text("Destination") },
                 modifier = Modifier.fillMaxWidth(),
                 trailingIcon = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = ::requestLocation) {
                         Icon(Icons.Outlined.MyLocation, "Current location")
                     }
                 }

@@ -18,10 +18,17 @@ import com.example.traveldiary.ui.TravelDiaryNavGraph
 import com.example.traveldiary.ui.TravelDiaryRoute
 import com.example.traveldiary.ui.composables.AppBar
 import com.example.traveldiary.ui.theme.TravelDiaryTheme
+import com.example.traveldiary.utils.LocationService
+import org.koin.android.ext.android.get
 
 class MainActivity : ComponentActivity() {
+    private lateinit var locationService: LocationService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        locationService = get<LocationService>()
+
         setContent {
             TravelDiaryTheme {
                 // A surface container using the 'background' color from the theme
@@ -50,5 +57,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        locationService.pauseLocationRequest()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        locationService.resumeLocationRequest()
     }
 }
