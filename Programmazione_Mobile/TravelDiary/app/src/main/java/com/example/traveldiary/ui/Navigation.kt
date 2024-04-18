@@ -59,7 +59,7 @@ fun TravelDiaryNavGraph(
             }
         }
         with(TravelDiaryRoute.TravelDetails) {
-            composable(route) { backStackEntry ->
+            composable(route, arguments) { backStackEntry ->
                 val place = requireNotNull(placesState.places.find {
                     it.id == backStackEntry.arguments?.getString("travelId")?.toInt()
                 })

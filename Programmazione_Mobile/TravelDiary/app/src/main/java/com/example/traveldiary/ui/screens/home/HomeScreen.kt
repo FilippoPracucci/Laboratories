@@ -1,5 +1,6 @@
 package com.example.traveldiary.ui.screens.home
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,8 @@ import androidx.navigation.NavHostController
 import com.example.traveldiary.data.database.Place
 import com.example.traveldiary.ui.PlacesState
 import com.example.traveldiary.ui.TravelDiaryRoute
+import com.example.traveldiary.ui.composables.ImageWithPlaceholder
+import com.example.traveldiary.ui.composables.Size
 
 @Composable
 fun HomeScreen(state: PlacesState, navController: NavHostController) {
@@ -92,17 +95,8 @@ fun TravelItem(item: Place, onClick: () -> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                Icons.Outlined.Image,
-                "Travel picture",
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(20.dp)
-            )
+            val imageUri = Uri.parse(item.imageUri)
+            ImageWithPlaceholder(imageUri, Size.Sm)
             Spacer(Modifier.size(8.dp))
             Text(
                 text = item.name,

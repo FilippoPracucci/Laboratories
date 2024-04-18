@@ -18,14 +18,14 @@ class SettingsViewModel(
     var state by mutableStateOf(SettingsState(""))
         private set
 
+    fun setUsername(value: String) {
+        state = SettingsState(value)
+        viewModelScope.launch { repository.setUsername(value) }
+    }
+
     init {
         viewModelScope.launch {
             state = SettingsState(repository.username.first())
         }
-    }
-
-    fun setUsername(value: String) {
-        state = SettingsState(value)
-        viewModelScope.launch { repository.setUsername(value) }
     }
 }

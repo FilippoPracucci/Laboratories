@@ -1,6 +1,7 @@
 package com.example.traveldiary.ui.screens.traveldetails
 
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.traveldiary.data.database.Place
+import com.example.traveldiary.ui.composables.ImageWithPlaceholder
+import com.example.traveldiary.ui.composables.Size
 
 @Composable
 fun TravelDetailsScreen(place: Place) {
@@ -57,20 +60,15 @@ fun TravelDetailsScreen(place: Place) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.padding(contentPadding).padding(12.dp).fillMaxSize()
+            modifier = Modifier
+                .padding(contentPadding)
+                .padding(12.dp)
+                .fillMaxSize()
         ) {
-            Image(
-                Icons.Outlined.Image,
-                "Travel picture",
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSecondary),
-                modifier = Modifier
-                    .size(140.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(36.dp)
-                    .padding(vertical = 16.dp),
-            )
+            Spacer(Modifier.size(16.dp))
+            val imageUri = Uri.parse(place.imageUri)
+            ImageWithPlaceholder(imageUri, Size.Lg)
+            Spacer(Modifier.size(16.dp))
             Text(
                 place.name,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
